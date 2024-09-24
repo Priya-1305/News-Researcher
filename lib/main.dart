@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'package:news_searcher/artical.dart';
-
-import 'package:news_searcher/sevices.dart';
+import 'package:news_searcher/artical.dart'; // Ensure correct import path
+import 'package:news_searcher/sevices.dart'; // Ensure correct import path
 
 void main() {
   runApp(MyApp());
@@ -44,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     } catch (e) {
       // Handle error
+      print('Error fetching articles: $e');
     } finally {
       setState(() {
         _isLoading = false;
@@ -73,21 +72,43 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(height: 10),
             _isLoading
-                ? CircularProgressIndicator()
+                ? Center(child: CircularProgressIndicator())
                 : Expanded(
                     child: ListView.builder(
                       itemCount: _articles.length,
                       itemBuilder: (context, index) {
                         final article = _articles[index];
-                        return ListTile(
-                          title: Text(article.title),
-                          subtitle: Text(article.description),
-                          leading: article.urlToImage.isNotEmpty
-                              ? Image.network(article.urlToImage)
-                              : null,
-                          onTap: () {
-                            // Handle article tap
-                          },
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Card(
+                            elevation: 4,
+                            child: ListTile(
+                              title: Text(
+                                article.title,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Text(article.description),
+                              leading: article.urlToImage.isNotEmpty
+                                  ? Image.network(
+                                      article.urlToImage,
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Container(
+                                      width: 100,
+                                      height: 100,
+                                      color: Colors.grey[200],
+                                      child: Icon(Icons.image),
+                                    ),
+                              onTap: () {
+                                // Handle article tap
+                                print('Tapped on: ${article.title}');
+                              },
+                            ),
+                          ),
                         );
                       },
                     ),
